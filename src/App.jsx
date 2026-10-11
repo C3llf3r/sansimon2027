@@ -174,7 +174,6 @@ export default function App() {
                 <div>
                   <h2 className="font-varsity-override text-3xl tracking-wider uppercase text-white font-bold drop-shadow-md">Registro <span className="text-simonRed">2K27</span></h2>
                   <p className="text-gray-400 text-[13px] md:text-[14px] mt-1">Únete a los 30 Años de Locura • Entrevistas 12 y 13 de Noviembre.</p>
-                  <p className="text-white/60 text-xs mt-0.5">📍 El lugar de la entrevista se coordinará por WhatsApp tras registrarte.</p>
                 </div>
                 <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-white transition bg-white/5 hover:bg-simonRed/80 p-2 rounded-full cursor-pointer"><X size={24}/></button>
               </div>
