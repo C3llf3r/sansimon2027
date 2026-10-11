@@ -12,7 +12,7 @@ export default function App() {
       <nav className="fixed z-50 w-full px-6 md:px-12 py-2 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
           <img src="/img/icono.png" alt="Caporales San Simón" className="w-12 h-12 object-contain drop-shadow-[0_0_15px_rgba(164,29,33,0.5)]" />
-          <span className="font-varsity text-2xl tracking-[0.1em] uppercase hidden sm:block font-normal pt-1">San Simón <span className="text-simonRed">Sucre</span></span>
+          <span className="font-varsity-override text-2xl tracking-[0.1em] uppercase hidden sm:block pt-1 font-bold">San Simón <span className="text-simonRed">Sucre</span></span>
         </div>
         <div className="flex items-center gap-4 md:gap-6">
           <a href="https://www.facebook.com/caporalessansimonsucreoficial" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-simonRed transition-colors duration-300 hover:drop-shadow-[0_0_10px_rgba(164,29,33,0.8)] hover:scale-110 transform">
