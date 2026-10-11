@@ -100,7 +100,7 @@ export default function App() {
             >
               <div className="p-6 md:p-8 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
                 <div>
-                  <h2 className="font-display text-3xl uppercase text-white font-black drop-shadow-md">Registro <span className="text-simonRed">2027</span></h2>
+                  <h2 className="font-varsity-override text-3xl tracking-wider uppercase text-white font-bold drop-shadow-md">Registro <span className="text-simonRed">2027</span></h2>
                   <p className="text-gray-400 text-[14px] mt-1">Únete a los 30 Años de Locura.</p>
                 </div>
                 <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-white transition bg-white/5 hover:bg-simonRed/80 p-2 rounded-full"><X size={24}/></button>
