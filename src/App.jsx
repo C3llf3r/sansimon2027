@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronRight, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, X, Volume2, VolumeX } from 'lucide-react';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef(null);
+
+  const toggleAudio = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
 
   return (
     <div className="h-screen w-full bg-simonDark relative font-sans text-simonLight overflow-hidden">
@@ -34,6 +43,7 @@ export default function App() {
       {/* MOBILE: relative, aspect-video, starts below navbar. DESKTOP: fixed, full screen, behind everything */}
       <div className="w-full relative md:absolute md:inset-0 z-0 aspect-video md:aspect-auto md:h-screen mt-[78px] md:mt-0 bg-black">
         <video 
+          ref={videoRef}
           autoPlay loop muted playsInline
           className="w-full h-full object-cover"
           style={{ filter: "contrast(1.1) brightness(0.50)" }}
@@ -154,6 +164,26 @@ export default function App() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* BOTON FLOTANTE DE AUDIO */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={toggleAudio}
+        aria-label={isMuted ? "Activar audio" : "Silenciar audio"}
+        className="fixed bottom-6 right-6 z-40 bg-black/60 hover:bg-black/80 backdrop-blur-xl border border-white/20 hover:border-simonRed text-white p-3.5 md:p-4 rounded-full shadow-[0_4px_25px_rgba(0,0,0,0.6)] hover:shadow-[0_0_20px_rgba(164,29,33,0.6)] transition-all duration-300 flex items-center gap-2.5 group cursor-pointer"
+      >
+        {isMuted ? (
+          <VolumeX size={22} className="text-gray-300 group-hover:text-simonRed transition-colors" />
+        ) : (
+          <Volume2 size={22} className="text-simonRed animate-pulse" />
+        )}
+        <span className="text-xs uppercase tracking-wider font-semibold max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-gray-200">
+          {isMuted ? "Activar audio" : "Silenciar"}
+        </span>
+      </motion.button>
 
     </div>
   );
