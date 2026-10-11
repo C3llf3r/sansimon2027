@@ -1,11 +1,43 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronRight, X, AudioLines, AudioLinesOff } from 'lucide-react';
+import { ArrowRight, ChevronRight, X, AudioLines, AudioLinesOff, Calendar } from 'lucide-react';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
+
+  // Cuenta regresiva hacia el 12 de Noviembre
+  const calculateTimeLeft = () => {
+    const targetDate = new Date('2026-11-12T08:00:00');
+    const now = new Date();
+    const diff = targetDate - now;
+
+    if (diff <= 0) {
+      return { days: '00', hours: '00', minutes: '00', seconds: '00' };
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    return {
+      days: String(days).padStart(2, '0'),
+      hours: String(hours).padStart(2, '0'),
+      minutes: String(minutes).padStart(2, '0'),
+      seconds: String(seconds).padStart(2, '0'),
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const toggleAudio = () => {
     if (videoRef.current) {
@@ -15,7 +47,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-full bg-simonDark relative font-sans text-simonLight overflow-hidden">
+    <div className="min-h-screen md:h-screen w-full bg-simonDark relative font-sans text-simonLight overflow-x-hidden md:overflow-hidden">
       
       {/* NAVBAR */}
       <nav className="fixed z-50 w-full px-6 md:px-12 py-2 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
@@ -56,7 +88,7 @@ export default function App() {
       </div>
 
       {/* HERO CONTENT */}
-      <main className="relative z-10 flex flex-col md:flex-row items-center md:items-start text-center md:text-left h-full md:h-screen px-4 md:px-16 pt-6 md:pt-32 pb-12">
+      <main className="relative z-10 flex flex-col md:flex-row items-center md:items-start text-center md:text-left min-h-[calc(100vh-78px)] md:h-screen px-4 md:px-16 pt-6 md:pt-28 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,11 +108,41 @@ export default function App() {
             Caporales Universitarios San Simón Sucre te abre sus puertas. Sé parte de la agrupación folclórica más grande e imponente de Bolivia rumbo al 2027. ¡Ven y vive la verdadera pasión del caporal!
           </p>
 
+          {/* COUNTDOWN TIMER */}
+          <div className="mt-6 md:mt-8 w-full max-w-md flex flex-col items-center md:items-start">
+            <div className="flex items-center gap-2 mb-3 text-xs md:text-sm font-semibold tracking-wider uppercase text-simonRed drop-shadow-md">
+              <Calendar size={16} className="shrink-0" />
+              <span>Entrevistas de Admisión: 12 y 13 de Noviembre</span>
+            </div>
+            
+            <div className="grid grid-cols-4 gap-2 md:gap-3 w-full">
+              {[
+                { label: 'Días', value: timeLeft.days },
+                { label: 'Horas', value: timeLeft.hours },
+                { label: 'Min', value: timeLeft.minutes },
+                { label: 'Seg', value: timeLeft.seconds },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-black/50 backdrop-blur-xl border border-white/10 border-t-white/20 rounded-2xl p-2.5 md:p-3 flex flex-col items-center shadow-[0_8px_30px_rgba(0,0,0,0.5)] relative overflow-hidden group hover:border-simonRed/60 transition-colors"
+                >
+                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-simonRed to-transparent opacity-80" />
+                  <span className="font-varsity-override text-2xl md:text-4xl font-bold tracking-wider text-white drop-shadow-md">
+                    {item.value}
+                  </span>
+                  <span className="text-[10px] md:text-xs font-sans tracking-widest uppercase text-gray-400 mt-0.5 font-medium">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <motion.button 
             whileHover={{ scale: 1.05, boxShadow: "0px 0px 40px rgba(164,29,33,0.6)" }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsFormOpen(true)}
-            className="mt-8 md:mt-10 bg-simonRed text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-[14px] md:text-lg uppercase tracking-widest flex items-center gap-3 transition-all relative overflow-hidden group shadow-[0_10px_30px_rgba(164,29,33,0.4)]"
+            className="mt-7 md:mt-8 bg-simonRed text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-[14px] md:text-lg uppercase tracking-widest flex items-center gap-3 transition-all relative overflow-hidden group shadow-[0_10px_30px_rgba(164,29,33,0.4)] cursor-pointer"
           >
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
             Postular Ahora <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform"/>
