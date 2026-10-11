@@ -173,9 +173,10 @@ export default function App() {
               <div className="p-6 md:p-8 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
                 <div>
                   <h2 className="font-varsity-override text-3xl tracking-wider uppercase text-white font-bold drop-shadow-md">Registro <span className="text-simonRed">2K27</span></h2>
-                  <p className="text-gray-400 text-[14px] mt-1">Únete a los 30 Años de Locura.</p>
+                  <p className="text-gray-400 text-[13px] md:text-[14px] mt-1">Únete a los 30 Años de Locura • Entrevistas 12 y 13 de Noviembre.</p>
+                  <p className="text-white/60 text-xs mt-0.5">📍 El lugar de la entrevista se coordinará por WhatsApp tras registrarte.</p>
                 </div>
-                <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-white transition bg-white/5 hover:bg-simonRed/80 p-2 rounded-full"><X size={24}/></button>
+                <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-white transition bg-white/5 hover:bg-simonRed/80 p-2 rounded-full cursor-pointer"><X size={24}/></button>
               </div>
               <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
                 <form 
@@ -183,7 +184,7 @@ export default function App() {
                   onSubmit={(e) => { 
                     e.preventDefault(); 
                     const fd = new FormData(e.target);
-                    const mensaje = `¡Hola! Quiero postular a Caporales San Simón Sucre 2027.%0A%0A*Mis Datos:*%0A👤 *Nombres:* ${fd.get('nombres')} ${fd.get('apellidos')}%0A🪪 *C.I.:* ${fd.get('ci')}%0A📱 *Mi celular:* ${fd.get('celular')}%0A🕺 *Postulo a:* ${fd.get('tropa')}%0A%0A¡Quedo a la espera de las instrucciones para la inscripción!`;
+                    const mensaje = `¡Hola! Quiero postular a Caporales San Simón Sucre 2K27.%0A%0A*Mis Datos:*%0A👤 *Nombres:* ${fd.get('nombres')} ${fd.get('apellidos')}%0A🪪 *C.I.:* ${fd.get('ci')}%0A📱 *Mi celular:* ${fd.get('celular')}%0A🕺 *Postulo a:* ${fd.get('tropa')}%0A%0A¡Quedo a la espera de las instrucciones y lugar de la entrevista!`;
                     window.open(`https://wa.me/59174455333?text=${mensaje}`, '_blank');
                     setIsFormOpen(false);
                   }}
@@ -198,12 +199,9 @@ export default function App() {
                     <label className="text-[14px] font-bold text-gray-300 uppercase tracking-wider">Selecciona tu Tropa</label>
                     <div className="relative">
                       <select name="tropa" required defaultValue="" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-white outline-none focus:border-simonRed focus:bg-white/10 transition-all appearance-none cursor-pointer shadow-inner">
-                        <option value="" disabled className="text-black">Elige una opción...</option>
-                        <option value="Bloque Machos" className="text-black">Bloque Machos</option>
-                        <option value="Bloque Cholitas" className="text-black">Bloque Cholitas</option>
-                        <option value="Bloque Kachas" className="text-black">Bloque Kachas</option>
-                        <option value="Bloque Jayas" className="text-black">Bloque Jayas</option>
-                        <option value="Aún no estoy seguro" className="text-black">Aún no estoy seguro / Nuevo</option>
+                        <option value="" disabled className="text-black">Elige tu tropa...</option>
+                        <option value="Tropa Machos" className="text-black">Tropa Machos</option>
+                        <option value="Tropa Cholitas" className="text-black">Tropa Cholitas</option>
                       </select>
                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                         <ChevronRight size={18} className="rotate-90"/>
