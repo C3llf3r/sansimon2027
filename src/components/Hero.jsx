@@ -164,16 +164,19 @@ export default function Hero({ onOpenForm, onOpenMemberPortal }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.88, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
+          transition={{ duration: 0.35 }}
           className="w-full lg:w-auto flex flex-col items-center justify-center relative select-none shrink-0 mt-4 lg:mt-0"
         >
           {/* Ambient Warm Golden Ground Reflection */}
           <div className="absolute inset-0 max-w-[340px] max-h-[340px] m-auto bg-simonGold/10 rounded-full blur-[90px] pointer-events-none" />
           
           <img
-            src="/30.png"
+            src="/30.webp"
             alt="30 Años San Simón Sucre"
             className="w-full max-w-[240px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px] xl:max-w-[440px] h-auto object-contain apple-product-shadow transition-transform duration-500 animate-float"
+            loading="eager"
+            fetchPriority="high"
+            onError={(e) => { e.currentTarget.src = '/30.png'; }}
           />
 
           <div className="mt-3.5 flex items-center gap-2 text-simonGold text-[11px] uppercase tracking-widest font-semibold opacity-85">

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, ArrowRight } from 'lucide-react';
+import { Shield, Sparkles, Crown, Swords, Zap, Flame, Award, ArrowRight } from 'lucide-react';
 
 const TROPAS_DATA = [
   {
     id: 'tropa-machos',
     name: 'Tropa Machos',
     category: 'Tropa Central',
-    icon: '🛡️',
+    icon: Shield,
     motto: 'El retumbar del cascabel y la devoción eterna',
     desc: 'El corazón imponente de la fraternidad. Destaca por la fuerza en el salto, la gallardía del paso al unísono y el compás marcial de los cascabeles de bronce.',
     color: 'from-amber-500/20 to-simonRed/20',
@@ -17,7 +17,7 @@ const TROPAS_DATA = [
     id: 'tropa-cholitas',
     name: 'Tropa Cholitas',
     category: 'Tropa Central',
-    icon: '🌹',
+    icon: Sparkles,
     motto: 'Cadencia, dulzura y altivez de la mujer boliviana',
     desc: 'Elegancia pura en la entrada. Con polleras al viento, botas estilizadas y una sonrisa que contagia fervor en cada kilómetro del recorrido.',
     color: 'from-rose-500/20 to-simonRed/20',
@@ -27,7 +27,7 @@ const TROPAS_DATA = [
     id: 'chinas',
     name: 'Figura Chinas',
     category: 'Figuras Exclusivas',
-    icon: '👑',
+    icon: Crown,
     motto: 'Elegancia, ritmo y garbo en cada giro',
     desc: 'La máxima expresión del ritmo y la gracia femenina. Sus trajes deslumbran con pedrería fina y un donaire inigualable al compás de la banda.',
     color: 'from-yellow-500/20 to-simonGold/20',
@@ -37,7 +37,7 @@ const TROPAS_DATA = [
     id: 'machas',
     name: 'Figura Machas',
     category: 'Figuras Exclusivas',
-    icon: '⚔️',
+    icon: Swords,
     motto: 'Liderazgo, destreza y gallardía sin límites',
     desc: 'Mujeres con porte imponente que dominan el paso del caporal con botas altas, sombrero y la energía que guía a las tropas en la pista.',
     color: 'from-red-500/20 to-simonRed/30',
@@ -47,7 +47,7 @@ const TROPAS_DATA = [
     id: 'kachas',
     name: 'Kachas & Acróbatas',
     category: 'Bloque Especial',
-    icon: '⚡',
+    icon: Zap,
     motto: 'Agilidad acrobática, saltos y carisma total',
     desc: 'Los reyes del aire. Protagonistas de los saltos mortales, acrobacias sincronizadas y la euforia que levanta las graderías del Carnaval de Oruro.',
     color: 'from-blue-500/20 to-simonBlue/30',
@@ -57,7 +57,7 @@ const TROPAS_DATA = [
     id: 'charcas',
     name: 'Bloque Charcas',
     category: 'Tradición e Historia',
-    icon: '✨',
+    icon: Award,
     motto: 'Brillo histórico y devoción a Sucre',
     desc: 'Un homenaje vivo a nuestras raíces en la histórica cuna de Charcas. Tradición, disciplina folclórica y un profundo sentimiento simón.',
     color: 'from-emerald-500/20 to-teal-500/20',
@@ -67,7 +67,7 @@ const TROPAS_DATA = [
     id: 'jayass',
     name: 'Jayass',
     category: 'Fuerza Escénica',
-    icon: '🔥',
+    icon: Flame,
     motto: 'Potencia escénica y pasión indomable',
     desc: 'Presencia magnética en cada presentación. Un bloque reconocido por su dinamismo en coreografía y la entrega absoluta en cada presentación oficial.',
     color: 'from-orange-500/20 to-amber-500/20',
@@ -139,7 +139,7 @@ export default function Tropas({ onOpenForm }) {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl">{tropa.icon}</span>
+                    <tropa.icon className="w-7 h-7 text-simonGold" />
                     <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-full bg-black/40 text-gray-300 border border-white/10">
                       {tropa.category}
                     </span>
@@ -179,8 +179,8 @@ export default function Tropas({ onOpenForm }) {
             className="mt-8 p-6 md:p-8 rounded-3xl bg-black/60 border border-white/15 backdrop-blur-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
           >
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-3xl shrink-0">
-                {activeTropa.icon}
+              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center shrink-0">
+                <activeTropa.icon className="w-8 h-8 text-simonGold" />
               </div>
               <div>
                 <div className="flex items-center gap-2">

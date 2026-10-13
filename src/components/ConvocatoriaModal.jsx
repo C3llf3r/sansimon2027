@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Send, Phone, User, MapPin, X, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Send, Phone, User, MapPin, X, Sparkles, Swords, Calendar } from 'lucide-react';
 
 // Regla oficial San Simón Sucre: Postulantes nuevos solo pueden aspirar a Machos o Cholitas
 const TROPAS = [
-  { id: 'machos', name: 'Tropa Machos', icon: '⚔️', desc: 'Fuerza & Cascabel' },
-  { id: 'cholitas', name: 'Tropa Cholitas', icon: '💃', desc: 'Cadencia & Gracia' },
+  { id: 'machos', name: 'Tropa Machos', icon: Swords, desc: 'Fuerza & Cascabel' },
+  { id: 'cholitas', name: 'Tropa Cholitas', icon: Sparkles, desc: 'Cadencia & Gracia' },
 ];
 
 const SEDES = [
@@ -110,7 +110,7 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
         <div className="px-5 py-3 sm:px-6 sm:py-3.5 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <img
-              src="/img/icono.png"
+              src="/img/icono.svg"
               alt="San Simón Sucre"
               className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-[0_0_10px_rgba(229,71,55,0.6)]"
             />
@@ -160,7 +160,7 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
                       }`}
                     >
                       <div className="flex items-center gap-1.5">
-                        <span className="text-base">{t.icon}</span>
+                        <t.icon size={15} className="text-simonGold shrink-0" />
                         <span className="font-bebas text-lg sm:text-xl text-white tracking-wide leading-none">
                           {t.name}
                         </span>
@@ -297,8 +297,9 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                <div className="mt-2.5 p-2 rounded-xl bg-simonRed/15 border border-simonRed/25 text-[10px] text-white/80">
-                  📅 <strong>Entrevistas:</strong> 12 y 13 Noviembre · Indumentaria deportiva.
+                <div className="mt-2.5 p-2 rounded-xl bg-simonRed/15 border border-simonRed/25 text-[10px] text-white/80 flex items-center justify-center gap-1.5">
+                  <Calendar size={13} className="text-simonGold shrink-0" />
+                  <span><strong>Entrevistas:</strong> 12 y 13 Noviembre · Indumentaria deportiva.</span>
                 </div>
               </div>
 

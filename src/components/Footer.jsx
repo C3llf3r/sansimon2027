@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
 
 export default function Footer({ onOpenForm, onOpenMemberPortal, onOpenAdmin }) {
   return (
@@ -14,7 +14,7 @@ export default function Footer({ onOpenForm, onOpenMemberPortal, onOpenAdmin }) 
         <div className="md:col-span-5 flex flex-col items-start">
           <div className="flex items-center gap-3 mb-4">
             <img 
-              src="/img/icono.png" 
+              src="/img/icono.svg" 
               alt="San Simón Sucre" 
               className="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(229,71,55,0.6)]" 
             />
@@ -57,7 +57,8 @@ export default function Footer({ onOpenForm, onOpenMemberPortal, onOpenAdmin }) 
             {onOpenAdmin && (
               <li className="pt-1.5 border-t border-white/[0.06]">
                 <button onClick={onOpenAdmin} className="text-white/40 hover:text-simonGold transition-colors duration-200 text-left uppercase cursor-pointer flex items-center gap-1.5 text-[12px]">
-                  <span>🔒 Panel Secretaría</span>
+                  <Lock size={12} className="text-simonGold/80" />
+                  <span>Panel Secretaría</span>
                 </button>
               </li>
             )}

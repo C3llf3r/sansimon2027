@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" fill="none">
+  <defs>
+    <!-- Gradiente Borde Metálico Plata -->
+    <linearGradient id="silverBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="25%" stop-color="#C5CDD8"/>
+      <stop offset="50%" stop-color="#7B889B"/>
+      <stop offset="75%" stop-color="#DFE4EA"/>
+      <stop offset="100%" stop-color="#4F5868"/>
+    </linearGradient>
+
+    <!-- Gradiente Azul Simón (Mitad Izquierda) -->
+    <linearGradient id="simonBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3E8F"/>
+      <stop offset="50%" stop-color="#112760"/>
+      <stop offset="100%" stop-color="#081438"/>
+    </linearGradient>
+
+    <!-- Gradiente Rojo Simón (Mitad Derecha) -->
+    <linearGradient id="simonRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E53935"/>
+      <stop offset="50%" stop-color="#A41D21"/>
+      <stop offset="100%" stop-color="#5E0F12"/>
+    </linearGradient>
+
+    <!-- Gradiente Oro para Destellos -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F6D365"/>
+      <stop offset="100%" stop-color="#FDA085"/>
+    </linearGradient>
+
+    <!-- Sombra Suave -->
+    <filter id="shieldShadow" x="-10%" y="-10%" width="125%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Brillo Metálico de la Cruz -->
+    <linearGradient id="crossSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#E2E6EC"/>
+      <stop offset="70%" stop-color="#9BA6B5"/>
+      <stop offset="100%" stop-color="#D1D7E0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Grupo Principal con Sombra -->
+  <g filter="url(#shieldShadow)">
+    
+    <!-- 1. Silueta / Marco Exterior Metálico del Escudo -->
+    <path d="M 60 18 
+             Q 85 24 104 32 
+             Q 102 78 88 102 
+             Q 74 122 60 134 
+             Q 46 122 32 102 
+             Q 18 78 16 32 
+             Q 35 24 60 18 Z" 
+          fill="url(#silverBorder)" 
+          stroke="#384150" 
+          stroke-width="1"/>
+
+    <!-- 2. Bisel Interior Metálico -->
+    <path d="M 60 22 
+             Q 83 28 100 35 
+             Q 98 76 85 99 
+             Q 72 118 60 129 
+             Q 48 118 35 99 
+             Q 22 76 20 35 
+             Q 37 28 60 22 Z" 
+          fill="#1C222E"/>
+
+    <!-- 3. Campo Izquierdo Azul Simón -->
+    <path d="M 60 24 
+             L 60 126 
+             Q 49 116 37 97 
+             Q 25 75 23 37 
+             Q 39 30 60 24 Z" 
+          fill="url(#simonBlueGrad)"/>
+
+    <!-- 4. Campo Derecho Rojo Simón -->
+    <path d="M 60 24 
+             Q 81 30 97 37 
+             Q 95 75 83 97 
+             Q 71 116 60 126 Z" 
+          fill="url(#simonRedGrad)"/>
+
+    <!-- Línea Divisoria Central -->
+    <line x1="60" y1="24" x2="60" y2="126" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+
+    <!-- 5. Cruz Oficial Curva de San Simón (En la parte superior central) -->
+    <!-- Cruz con aspas acampanadas / curvadas tipo Cruz San Simón -->
+    <g transform="translate(60, 38)">
+      <!-- Sombra / Reborde de la Cruz -->
+      <path d="M 0 -22 
+               C 6 -20, 11 -16, 12 -10 
+               C 7 -9, 4 -5, 5 0 
+               C 10 -1, 15 2, 21 -4 
+               C 19 2, 15 7, 9 8 
+               C 10 13, 14 16, 19 21 
+               C 13 19, 8 15, 7 9 
+               C 2 10, -1 14, -7 20 
+               C -5 14, -2 10, -8 8 
+               C -14 7, -18 2, -20 -4 
+               C -15 -2, -10 1, -5 0 
+               C -4 -5, -7 -9, -12 -10 
+               C -11 -16, -6 -20, 0 -22 Z" 
+            fill="#1A202C" />
+
+      <!-- Cruz en Plata Metálica -->
+      <path d="M 0 -20 
+               C 5 -18, 9 -15, 10 -9 
+               C 6 -8, 3 -4, 4 0 
+               C 8 -1, 13 1, 18 -3 
+               C 16 2, 13 6, 8 7 
+               C 9 11, 12 14, 16 18 
+               C 11 17, 7 13, 6 8 
+               C 2 9, -1 12, -5 17 
+               C -4 12, -2 9, -6 7 
+               C -11 6, -15 2, -17 -3 
+               C -13 -1, -9 1, -4 0 
+               C -3 -4, -6 -8, -10 -9 
+               C -9 -15, -5 -18, 0 -20 Z" 
+            fill="url(#crossSilver)" 
+            stroke="#FFFFFF" 
+            stroke-width="0.75"/>
+      
+      <!-- Destello Central -->
+      <circle cx="0" cy="0" r="2.5" fill="#FFFFFF"/>
+      <circle cx="0" cy="0" r="1.2" fill="#E2E8F0"/>
+    </g>
+
+    <!-- 6. Cinta / Bloque Tipográfico Central "SAN SIMÓN" -->
+    <!-- Placa de fondo texto -->
+    <path d="M 12 66 
+             L 108 66 
+             L 105 84 
+             L 15 84 Z" 
+          fill="#0A0E17" 
+          stroke="url(#silverBorder)" 
+          stroke-width="1.2"/>
+
+    <!-- Texto "SAN SIMON" en Blanco / Plata Varsity -->
+    <text x="60" y="80" 
+          font-family="'Arial Black', 'Impact', sans-serif" 
+          font-weight="900" 
+          font-size="14.5" 
+          fill="#FFFFFF" 
+          letter-spacing="0.8" 
+          text-anchor="middle"
+          stroke="#101522" 
+          stroke-width="0.6">
+      SAN SIMON
+    </text>
+
+    <!-- 7. Bloque Tipográfico Inferior "SUCRE" -->
+    <path d="M 32 86 
+             L 88 86 
+             L 83 99 
+             L 37 99 Z" 
+          fill="#8B1115" 
+          stroke="url(#silverBorder)" 
+          stroke-width="0.8"/>
+
+    <!-- Texto "SUCRE" en Blanco -->
+    <text x="60" y="96.5" 
+          font-family="'Arial Black', 'Impact', sans-serif" 
+          font-weight="900" 
+          font-size="10" 
+          fill="#FFFFFF" 
+          letter-spacing="2.2" 
+          text-anchor="middle">
+      SUCRE
+    </text>
+
+    <!-- Pequeña estrella dorada en la punta inferior -->
+    <polygon points="60,116 61.5,120 65.5,120.5 62.5,123 63.5,127 60,124.5 56.5,127 57.5,123 54.5,120.5 58.5,120" 
+             fill="#F6D365"/>
+
+  </g>
+</svg>

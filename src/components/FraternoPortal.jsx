@@ -46,7 +46,7 @@ export default function FraternoPortal({ isOpen, onClose, fraternoData, onLogout
         <div className="px-6 py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-3">
             <img 
-              src="/img/icono.png" 
+              src="/img/icono.svg" 
               alt="San Simón Sucre" 
               className="w-9 h-9 object-contain drop-shadow-[0_0_12px_rgba(229,71,55,0.6)]" 
             />
@@ -130,7 +130,7 @@ export default function FraternoPortal({ isOpen, onClose, fraternoData, onLogout
                   <div className="flex justify-between items-start mb-6">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-black/50 border border-white/20 flex items-center justify-center p-1">
-                        <img src="/img/icono.png" alt="San Simón Sucre" className="w-full h-full object-contain" />
+                        <img src="/img/icono.svg" alt="San Simón Sucre" className="w-full h-full object-contain" />
                       </div>
                       <span className="font-varsity-override text-lg font-bold text-white tracking-wider">
                         SAN SIMÓN <span className="text-simonRedLight">SUCRE</span>

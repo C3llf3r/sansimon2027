@@ -88,7 +88,7 @@ export default function Identidad() {
         <div className="mt-16 p-8 rounded-3xl bg-gradient-to-r from-simonRed/30 via-simonDark to-simonBlue/30 border border-white/15 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
           <div className="flex items-center gap-4">
             <img 
-              src="/img/icono.png" 
+              src="/img/icono.svg" 
               alt="San Simón Sucre" 
               className="w-14 h-14 object-contain drop-shadow-[0_0_15px_rgba(164,29,33,0.8)]" 
             />

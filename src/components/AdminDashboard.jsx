@@ -222,7 +222,7 @@ export default function AdminDashboard({ isOpen, onClose }) {
         <div className="px-5 sm:px-8 py-4 sm:py-5 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-3.5">
             <img
-              src="/img/icono.png"
+              src="/img/icono.svg"
               alt="San Simón Sucre"
               className="w-10 h-10 object-contain drop-shadow-[0_0_14px_rgba(229,71,55,0.7)]"
             />

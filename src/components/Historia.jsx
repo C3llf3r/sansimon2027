@@ -111,9 +111,11 @@ export default function Historia() {
           <div className="md:col-span-4 flex justify-center items-center">
             <div className="relative w-full max-w-[280px] flex justify-center items-center">
               <img
-                src="/30.png"
+                src="/30.webp"
                 alt="30 Años San Simón Sucre"
                 className="w-full h-auto max-h-[260px] object-contain apple-product-shadow transition-transform duration-500 animate-float"
+                loading="lazy"
+                onError={(e) => { e.currentTarget.src = '/30.png'; }}
               />
             </div>
           </div>
