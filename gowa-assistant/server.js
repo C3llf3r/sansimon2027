@@ -26,12 +26,23 @@ if (!fs.existsSync(DB_FILE)) {
 
 function guardarPostulante(data) {
   try {
-    const list = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
-    list.push({ ...data, fechaRegistro: new Date().toISOString() });
+    let list = [];
+    if (fs.existsSync(DB_FILE)) {
+      list = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    }
+    const estado = data.estado || 'Pendiente';
+    const index = list.findIndex(p => (p.codigo && p.codigo === data.codigo) || (p.telefono && data.telefono && p.telefono === data.telefono && p.codigo === data.codigo));
+    if (index >= 0) {
+      list[index] = { ...list[index], ...data, estado: list[index].estado || estado, fechaActualizacion: new Date().toISOString() };
+    } else {
+      list.unshift({ ...data, estado, fechaRegistro: new Date().toISOString() });
+    }
     fs.writeFileSync(DB_FILE, JSON.stringify(list, null, 2), 'utf-8');
-    console.log(`[DB] Postulante guardado con éxito: ${data.nombre} (${data.codigo})`);
+    console.log(`[DB] Postulante guardado/actualizado con éxito: ${data.nombre} (${data.codigo})`);
+    return true;
   } catch (err) {
     console.error('[DB Error]', err);
+    return false;
   }
 }
 
@@ -448,6 +459,72 @@ app.get('/postulantes', (req, res) => {
     res.json({ total: list.length, postulantes: list });
   } catch {
     res.json({ total: 0, postulantes: [] });
+  }
+});
+
+// Endpoint para registrar postulante desde el formulario web
+app.post('/postulantes', (req, res) => {
+  try {
+    const data = req.body || {};
+    if (!data.nombre || !data.telefono) {
+      return res.status(400).json({ error: 'Nombre y teléfono son requeridos' });
+    }
+    const cleanPhone = (data.telefono || '').replace(/[^0-9]/g, '');
+    const postulante = {
+      codigo: data.codigo || `#ADM-2027-${Math.floor(1000 + Math.random() * 9000)}`,
+      nombre: data.nombre.trim(),
+      telefono: cleanPhone,
+      email: (data.email || '').trim(),
+      sede: data.sede || data.ciudad || 'Sucre',
+      tropa: data.tropa || 'Por Asignar',
+      experiencia: data.experiencia || 'No especificada',
+      estado: data.estado || 'Pendiente',
+      origen: data.origen || 'Formulario Web Oficial'
+    };
+    guardarPostulante(postulante);
+    res.status(201).json({ status: 'OK', postulante });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endpoint para que secretaría actualice el estado de un postulante
+app.patch('/postulantes/:codigo/estado', (req, res) => {
+  try {
+    const { codigo } = req.params;
+    const { estado, notas } = req.body;
+    if (!estado) {
+      return res.status(400).json({ error: 'El estado es requerido' });
+    }
+    let list = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    const index = list.findIndex(p => p.codigo === codigo);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Postulante no encontrado' });
+    }
+    list[index].estado = estado;
+    if (notas !== undefined) list[index].notas = notas;
+    list[index].fechaActualizacion = new Date().toISOString();
+    fs.writeFileSync(DB_FILE, JSON.stringify(list, null, 2), 'utf-8');
+    res.json({ status: 'OK', postulante: list[index] });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endpoint para eliminar postulante (pruebas/depuración)
+app.delete('/postulantes/:codigo', (req, res) => {
+  try {
+    const { codigo } = req.params;
+    let list = JSON.parse(fs.readFileSync(DB_FILE, 'utf-8'));
+    const initialLength = list.length;
+    list = list.filter(p => p.codigo !== codigo);
+    if (list.length === initialLength) {
+      return res.status(404).json({ error: 'Postulante no encontrado' });
+    }
+    fs.writeFileSync(DB_FILE, JSON.stringify(list, null, 2), 'utf-8');
+    res.json({ status: 'OK', total: list.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock, Eye, EyeOff, KeyRound, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 
-export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess }) {
+export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, onOpenAdmin }) {
   const [codigo, setCodigo] = useState('');
   const [pin, setPin] = useState('');
   const [showPin, setShowPin] = useState(false);
@@ -31,6 +31,15 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess })
 
     const cleanCodigo = codigo.trim().toUpperCase();
     const cleanPin = pin.trim();
+
+    // Acceso especial de administración directa
+    if ((cleanCodigo === 'ADMIN' || cleanCodigo === 'SECRETARIA' || cleanCodigo === 'DIRECTIVA') && (cleanPin === '2027' || cleanPin === 'SIMON2027')) {
+      if (onOpenAdmin) {
+        onClose();
+        onOpenAdmin();
+        return;
+      }
+    }
 
     if (!cleanCodigo) {
       setError('Por favor, ingresa tu código de fraterno o C.I.');
@@ -218,8 +227,8 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess })
               </div>
             </div>
 
-            {/* Footer con asistencia por WhatsApp */}
-            <div className="p-6 border-t border-white/[0.08] bg-white/[0.02] text-center">
+            {/* Footer con asistencia por WhatsApp y Acceso Administración */}
+            <div className="p-6 border-t border-white/[0.08] bg-white/[0.02] text-center space-y-3">
               <button
                 type="button"
                 onClick={handleHelpWhatsApp}
@@ -228,6 +237,19 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess })
                 ¿Olvidaste tu credencial o no cuentas con PIN?<br />
                 <strong className="text-simonGold hover:underline">Consultar a Secretaría por WhatsApp →</strong>
               </button>
+
+              {onOpenAdmin && (
+                <div className="pt-2.5 border-t border-white/[0.06]">
+                  <button
+                    type="button"
+                    onClick={onOpenAdmin}
+                    className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40 hover:text-simonGold transition-colors cursor-pointer"
+                  >
+                    <ShieldCheck size={13} className="text-simonGold" />
+                    <span>Acceso Directiva & Secretaría</span>
+                  </button>
+                </div>
+              )}
             </div>
           </motion.aside>
         </>

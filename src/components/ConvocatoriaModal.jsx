@@ -37,6 +37,24 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
       }
       setStep(2);
     } else if (step === 2) {
+      // Registrar en el padrón de secretaría al completar el formulario
+      const selectedTropaObj = TROPAS.find(t => t.id === formData.tropa);
+      fetch('/postulantes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          codigo: admissionCode,
+          nombre: formData.nombre,
+          telefono: formData.telefono,
+          email: formData.email,
+          sede: formData.ciudad,
+          tropa: selectedTropaObj?.name || formData.tropa,
+          experiencia: formData.experiencia,
+          estado: 'Pendiente',
+          origen: 'Formulario Web Oficial'
+        })
+      }).catch(err => console.error('[Postulante Save Error]', err));
+
       setStep(3);
     }
   };
@@ -44,12 +62,13 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
   const handleWhatsApp = () => {
     const selectedTropaObj = TROPAS.find(t => t.id === formData.tropa);
     const mensaje = encodeURIComponent(
+      `🔴🔵 ¡CONFIRMACIÓN DE POSTULACIÓN - SAN SIMÓN SUCRE! 🔴🔵\n\n` +
       `¡Hola San Simón Sucre! Confirmo mi postulación oficial al Carnaval de Oruro 2027.\n\n` +
       `🪪 *CÓDIGO:* ${admissionCode}\n` +
       `👤 *NOMBRE:* ${formData.nombre}\n` +
       `📞 *TELÉFONO:* ${formData.telefono}\n` +
       `📍 *SEDE:* ${formData.ciudad}\n` +
-      `🦅 *BLOQUE:* ${selectedTropaObj?.name || formData.tropa}\n` +
+      `🔵🔴 *BLOQUE:* ${selectedTropaObj?.name || formData.tropa}\n` +
       `⭐ *EXPERIENCIA:* ${formData.experiencia}\n\n` +
       `Quedo a la espera de mis indicaciones y enlace de grupo.`
     );

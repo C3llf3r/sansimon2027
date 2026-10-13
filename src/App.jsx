@@ -11,12 +11,14 @@ import GalleryLightbox from './components/GalleryLightbox';
 import LoginFraternoDrawer from './components/LoginFraternoDrawer';
 import FraternoPortal from './components/FraternoPortal';
 import ConvocatoriaModal from './components/ConvocatoriaModal';
+import AdminDashboard from './components/AdminDashboard';
 import Footer from './components/Footer';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoginDrawerOpen, setIsLoginDrawerOpen] = useState(false);
   const [isMemberPortalOpen, setIsMemberPortalOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [authenticatedFraterno, setAuthenticatedFraterno] = useState(null);
 
   const handleOpenMemberLogin = () => {
@@ -73,6 +75,7 @@ export default function App() {
       <Footer
         onOpenForm={() => setIsFormOpen(true)}
         onOpenMemberPortal={handleOpenMemberLogin}
+        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* MODALES Y PANELES INTERACTIVOS */}
@@ -81,6 +84,10 @@ export default function App() {
         isOpen={isLoginDrawerOpen}
         onClose={() => setIsLoginDrawerOpen(false)}
         onLoginSuccess={handleLoginSuccess}
+        onOpenAdmin={() => {
+          setIsLoginDrawerOpen(false);
+          setIsAdminOpen(true);
+        }}
       />
 
       {/* Portal Fraterno "Soy Simón de Corazón" */}
@@ -95,6 +102,12 @@ export default function App() {
       <ConvocatoriaModal
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
+      />
+
+      {/* Panel de Control Oficial de Administración & Secretaría */}
+      <AdminDashboard
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
       />
     </div>
   );

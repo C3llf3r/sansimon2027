@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 
-export default function Footer({ onOpenForm, onOpenMemberPortal }) {
+export default function Footer({ onOpenForm, onOpenMemberPortal, onOpenAdmin }) {
   return (
     <footer className="bg-[#050B1A] border-t border-white/[0.08] text-white/60 py-16 px-4 md:px-8 relative overflow-hidden">
       
@@ -54,6 +54,13 @@ export default function Footer({ onOpenForm, onOpenMemberPortal }) {
                 Convocatoria Oruro 2027
               </button>
             </li>
+            {onOpenAdmin && (
+              <li className="pt-1.5 border-t border-white/[0.06]">
+                <button onClick={onOpenAdmin} className="text-white/40 hover:text-simonGold transition-colors duration-200 text-left uppercase cursor-pointer flex items-center gap-1.5 text-[12px]">
+                  <span>🔒 Panel Secretaría</span>
+                </button>
+              </li>
+            )}
           </ul>
         </div>
 
