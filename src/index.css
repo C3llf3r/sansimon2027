@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300..800;1,300..800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600;700&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -8,33 +8,129 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'SuperstarM54';
+  src: url('/fonts/Superstar-M54.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-superstar {
+  font-family: 'SuperstarM54', 'VarsityTeam', sans-serif !important;
+}
+
 .font-varsity-override {
-  font-family: 'VarsityTeam', sans-serif !important;
+  font-family: 'VarsityTeam', 'Bebas Neue', sans-serif !important;
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+.font-grotesk {
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 @theme {
-  --color-simonDark: #0a0a0a;
-  --color-simonLight: #f5f5f5;
-  --color-simonRed: #a41d21;
-  --color-simonBlue: #003087;
+  --color-simonDark: #0a1128;
+  --color-simonDeep: #081026;
+  --color-simonLight: #ffffff;
+  --color-simonRed: #e54737;
+  --color-simonRedLight: #ff5a47;
+  --color-simonGold: #d4a853;
+  --color-simonChampagne: #d4a853;
+  --color-simonBlue: #0f2b5c;
+  --color-appleTile: #0d1527;
+  --color-appleTileDark: #081026;
   --font-display: "Cinzel", serif;
-  --font-sans: "Open Sans", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "DM Sans", system-ui, sans-serif;
   --font-varsity: "VarsityTeam", sans-serif;
-  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
 }
 
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: .8; transform: scale(1.05); }
+.text-champagne {
+  color: #d4a853 !important;
+}
+
+/* Apple Pro Keynote Editorial Typography */
+.font-editorial-title {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "DM Sans", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.07;
+}
+
+/* Apple Pro 17px Body Standard */
+.apple-body {
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.018em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(1deg); }
+}
+
+.animate-float {
+  animation: float-slow 4.5s ease-in-out infinite;
+}
+
+/* Apple Pro Hairline Glassmorphism */
+.apple-glass {
+  background: rgba(8, 16, 38, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.apple-tile {
+  background: rgba(13, 21, 39, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.apple-tile-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.apple-tile-hover:hover {
+  border-color: rgba(212, 168, 83, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Apple Single Product Shadow */
+.apple-product-shadow {
+  filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.65)) drop-shadow(0 10px 25px rgba(212, 168, 83, 0.32));
 }
 
 body {
-  background-color: var(--color-simonDark);
+  background-color: var(--color-simonDeep);
   color: var(--color-simonLight);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
+/* Custom scrollbar - Apple discrete style */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #081026;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
 }

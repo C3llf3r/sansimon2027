@@ -1,0 +1,16 @@
+{
+  "name": "gowa-sansimon-assistant",
+  "version": "1.0.0",
+  "description": "Webhook Assistant para GoWA - Admisión Caporales San Simón Sucre 2027",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7"
+  }
+}
