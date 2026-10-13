@@ -104,24 +104,70 @@ function extractField(rawText, pattern) {
   return null;
 }
 
+// Cache en memoria para deduplicación de mensajes (evita reenvíos)
+const processedMessageIds = new Map();
+
+function isDuplicateMessage(messageId) {
+  if (!messageId) return false;
+  const now = Date.now();
+  // Limpiar mensajes con más de 10 minutos
+  for (const [id, time] of processedMessageIds.entries()) {
+    if (now - time > 10 * 60 * 1000) {
+      processedMessageIds.delete(id);
+    }
+  }
+  if (processedMessageIds.has(messageId)) {
+    return true;
+  }
+  processedMessageIds.set(messageId, now);
+  return false;
+}
+
 // Endpoint Webhook para recibir mensajes de GoWA
 app.post('/webhook', async (req, res) => {
   try {
     const body = req.body || {};
-    console.log('[GoWA Webhook Recibido]:', JSON.stringify(body, null, 2));
+    const event = body.event || '';
+
+    // 1. Filtrar únicamente eventos de mensajes nuevos entrantes
+    if (event && event !== 'message') {
+      return res.status(200).json({ status: `Ignored event: ${event}` });
+    }
 
     // Desempaquetar payload según formato GoWA MultiDevice
     const payload = body.payload || body;
-    const isFromMe = payload.is_from_me || body.is_from_me || false;
 
-    // Ignorar mensajes enviados por el propio bot para no crear bucle
+    // 2. Ignorar eventos de confirmación de entrega o lectura (ack, receipt, delivered)
+    if (payload.receipt_type || payload.ids || body.event === 'message.ack') {
+      return res.status(200).json({ status: 'Ignored delivery receipt/ack' });
+    }
+
+    // 3. Ignorar mensajes enviados por el propio bot para no crear bucle
+    const isFromMe = payload.is_from_me || body.is_from_me || false;
     if (isFromMe) {
       return res.status(200).json({ status: 'Ignored own message' });
     }
 
+    // 4. Ignorar si el texto está vacío
+    const text = (payload.body || payload.message || payload.text || body.message || body.body || '').trim();
+    if (!text || text.length === 0) {
+      return res.status(200).json({ status: 'Ignored empty message' });
+    }
+
+    // 5. Deduplicación por ID de mensaje de WhatsApp
+    const messageId = payload.id || body.id || null;
+    if (messageId && isDuplicateMessage(messageId)) {
+      console.log(`[GoWA Webhook] Mensaje duplicado ignorado: ${messageId}`);
+      return res.status(200).json({ status: 'Ignored duplicate message' });
+    }
+
     const senderRaw = payload.from || payload.sender || payload.phone || body.from || '';
     const sender = senderRaw.replace(/@.*$/, '').replace(/[^0-9]/g, '');
-    const text = (payload.body || payload.message || payload.text || body.message || body.body || '').trim();
+    if (!sender) {
+      return res.status(200).json({ status: 'Ignored missing sender' });
+    }
+
+    console.log(`[GoWA Webhook Procesando]: De ${sender} | MsgID: ${messageId || 'N/A'} | Texto: "${text}"`);
 
     // Normalizar texto para análisis conversacional
     const cleanText = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
