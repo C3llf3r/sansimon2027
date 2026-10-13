@@ -1,62 +1,64 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Send, Phone, User, Mail, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, CheckCircle2, Send, Phone, User, MapPin, X, Sparkles } from 'lucide-react';
 
+// Regla oficial San Simón Sucre: Postulantes nuevos solo pueden aspirar a Machos o Cholitas
 const TROPAS = [
-  { id: 'machos', name: 'Tropa Machos', desc: 'Fuerza, cascabel y gallardía' },
-  { id: 'cholitas', name: 'Tropa Cholitas', desc: 'Cadencia, elegancia y tradición' },
-  { id: 'chinas', name: 'Figura Chinas', desc: 'Ritmo imponente y donaire' },
-  { id: 'machas', name: 'Figura Machas', desc: 'Destreza y liderazgo escénico' },
-  { id: 'kachas', name: 'Kachas / Acróbatas', desc: 'Saltos y carisma total' },
-  { id: 'charcas', name: 'Bloque Charcas', desc: 'Brillo y devoción folclórica' },
+  { id: 'machos', name: 'Tropa Machos', icon: '⚔️', desc: 'Fuerza & Cascabel' },
+  { id: 'cholitas', name: 'Tropa Cholitas', icon: '💃', desc: 'Cadencia & Gracia' },
+];
+
+const SEDES = [
+  { id: 'Sucre', label: 'Sucre (Sede Matriz)' },
+  { id: 'Oruro', label: 'Oruro' },
+  { id: 'La Paz', label: 'La Paz' },
+  { id: 'Cochabamba', label: 'Cochabamba' },
+  { id: 'Santa Cruz', label: 'Santa Cruz' },
+  { id: 'Potosi', label: 'Potosí' },
+  { id: 'Tarija', label: 'Tarija' },
+  { id: 'Exterior', label: 'Filial Internacional' },
 ];
 
 export default function ConvocatoriaModal({ isOpen, onClose }) {
-  const [step, setStep] = useState(1); // 1: Datos | 2: Tropa/Test | 3: Pase Confirmado
+  const [step, setStep] = useState(1); // 1: Datos & Bloque | 2: Pase Confirmado
   const [formData, setFormData] = useState({
     nombre: '',
     telefono: '',
-    email: '',
     ciudad: 'Sucre',
     tropa: 'machos',
-    experiencia: 'Principiante (Con muchas ganas de aprender)',
   });
+
+  const [admissionCode] = useState(() => `#ADM-2027-${Math.floor(1000 + Math.random() * 9000)}`);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const [admissionCode] = useState(() => `#ADM-2027-${Math.floor(1000 + Math.random() * 9000)}`);
-
-  const handleNext = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (step === 1) {
-      if (!formData.nombre || !formData.telefono) {
-        alert('Por favor, ingresa tu nombre y número de teléfono.');
-        return;
-      }
-      setStep(2);
-    } else if (step === 2) {
-      // Registrar en el padrón de secretaría al completar el formulario
-      const selectedTropaObj = TROPAS.find(t => t.id === formData.tropa);
-      fetch('/postulantes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          codigo: admissionCode,
-          nombre: formData.nombre,
-          telefono: formData.telefono,
-          email: formData.email,
-          sede: formData.ciudad,
-          tropa: selectedTropaObj?.name || formData.tropa,
-          experiencia: formData.experiencia,
-          estado: 'Pendiente',
-          origen: 'Formulario Web Oficial'
-        })
-      }).catch(err => console.error('[Postulante Save Error]', err));
-
-      setStep(3);
+    if (!formData.nombre.trim() || !formData.telefono.trim()) {
+      alert('Por favor, ingresa tu nombre y número de teléfono.');
+      return;
     }
+
+    const selectedTropaObj = TROPAS.find(t => t.id === formData.tropa);
+
+    // Registro automático en el padrón de secretaría
+    fetch('/postulantes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo: admissionCode,
+        nombre: formData.nombre.trim(),
+        telefono: formData.telefono.trim(),
+        sede: formData.ciudad,
+        tropa: selectedTropaObj?.name || 'Tropa Machos',
+        estado: 'Pendiente',
+        origen: 'Formulario Web Oficial',
+      }),
+    }).catch(err => console.error('[Postulante Save Error]', err));
+
+    setStep(2);
   };
 
   const handleWhatsApp = () => {
@@ -68,66 +70,116 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
       `👤 *NOMBRE:* ${formData.nombre}\n` +
       `📞 *TELÉFONO:* ${formData.telefono}\n` +
       `📍 *SEDE:* ${formData.ciudad}\n` +
-      `🔵🔴 *BLOQUE:* ${selectedTropaObj?.name || formData.tropa}\n` +
-      `⭐ *EXPERIENCIA:* ${formData.experiencia}\n\n` +
-      `Quedo a la espera de mis indicaciones y enlace de grupo.`
+      `🔵🔴 *BLOQUE:* ${selectedTropaObj?.name || 'Tropa Machos'}\n\n` +
+      `Quedo a la espera de mis indicaciones y rol de entrevistas.`
     );
     window.open(`https://api.whatsapp.com/send?phone=59170322221&text=${mensaje}`, '_blank');
+  };
+
+  const handleResetAndClose = () => {
+    setStep(1);
+    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md overflow-hidden">
+      
+      {/* Telón de fondo */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-xl bg-[#081026]/95 border border-white/[0.12] rounded-[28px] overflow-hidden shadow-[0_30px_90px_rgba(8,16,38,0.95)] my-6 backdrop-blur-2xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={handleResetAndClose}
+        className="fixed inset-0 bg-transparent cursor-pointer"
+      />
+
+      {/* Modal / Bottom Sheet Nativo */}
+      <motion.div
+        initial={{ y: '100%', opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: '100%', opacity: 0 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+        className="relative z-10 w-full max-w-lg bg-[#081026] border-t sm:border border-white/10 rounded-t-[26px] sm:rounded-[28px] overflow-hidden shadow-[0_-15px_45px_rgba(8,16,38,0.95)] max-h-[92vh] flex flex-col"
       >
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
-          <div>
-            <span className="text-[10px] uppercase font-semibold tracking-widest text-simonGold block">
-              Proceso de Admisión · Paso {step} de 3
-            </span>
-            <h3 className="font-bebas text-2xl text-white tracking-wide">
-              CONVOCATORIA <span className="text-simonRed">ORURO 2027</span>
-            </h3>
+        {/* Manija táctil superior (Solo móvil) */}
+        <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mt-2.5 mb-0.5 sm:hidden" />
+
+        {/* Header Compacto */}
+        <div className="px-5 py-3 sm:px-6 sm:py-3.5 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/img/icono.png"
+              alt="San Simón Sucre"
+              className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-[0_0_10px_rgba(229,71,55,0.6)]"
+            />
+            <div>
+              <h3 className="font-varsity-override text-base sm:text-lg font-bold text-white tracking-wide leading-none uppercase">
+                CONVOCATORIA <span className="text-simonRed">ORURO 2027</span>
+              </h3>
+              <span className="text-[10px] uppercase tracking-wider text-simonGold font-semibold">
+                {step === 1 ? 'Paso 1: Postulación Oficial' : 'Paso 2: Pase de Admisión'}
+              </span>
+            </div>
           </div>
+
           <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 text-white/60 hover:text-white border border-white/10 flex items-center justify-center transition-all cursor-pointer text-xs"
-            title="Cerrar"
+            onClick={handleResetAndClose}
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 text-white/70 hover:text-white border border-white/10 flex items-center justify-center transition-all cursor-pointer text-xs"
+            title="Cerrar (Esc)"
           >
-            ✕
+            <X size={15} />
           </button>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-full bg-white/[0.04] h-1">
-          <div
-            className="bg-gradient-to-r from-simonRed to-simonGold h-full transition-all duration-500"
-            style={{ width: `${(step / 3) * 100}%` }}
-          />
-        </div>
-
-        {/* Modal Body */}
-        <div className="p-6">
+        {/* CUERPO DEL FORMULARIO */}
+        <div className="p-4 sm:p-6 overflow-y-auto">
           
-          {/* STEP 1: Personal Info */}
+          {/* ========================================================
+              PASO 1: SELECCIÓN RÁPIDA & DATOS (Cero Scroll en Móvil)
+              ======================================================== */}
           {step === 1 && (
-            <form onSubmit={handleNext} className="space-y-4">
-              <div className="text-[14px] text-white/70 leading-relaxed font-normal">
-                Completa tus datos para agendar tu entrevista de admisión los días <strong>12 y 13 de Noviembre</strong>.
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              
+              {/* 1. Selector de Tropa (2 Botones Segmentados Exclusivos) */}
+              <div>
+                <label className="block text-[10px] sm:text-[11px] uppercase font-bold tracking-wider text-simonGold mb-1.5">
+                  Elige tu Tropa de Postulación *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {TROPAS.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, tropa: t.id })}
+                      className={`py-2.5 px-3 rounded-2xl border text-center transition-all duration-150 cursor-pointer active:scale-95 flex flex-col items-center justify-center ${
+                        formData.tropa === t.id
+                          ? 'bg-simonRed/20 border-simonGold shadow-[0_0_15px_rgba(212,168,83,0.25)]'
+                          : 'bg-white/[0.03] border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-base">{t.icon}</span>
+                        <span className="font-bebas text-lg sm:text-xl text-white tracking-wide leading-none">
+                          {t.name}
+                        </span>
+                      </div>
+                      <span className="text-[9px] uppercase tracking-wider text-white/50 mt-0.5 font-medium">
+                        {t.desc}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
+              {/* 2. Campo: Nombre Completo */}
               <div>
-                <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
+                <label className="block text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1">
                   Nombre Completo *
                 </label>
                 <div className="relative">
-                  <User size={17} className="absolute left-4 top-3.5 text-white/40" />
+                  <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                   <input
                     type="text"
                     name="nombre"
@@ -135,18 +187,19 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
                     value={formData.nombre}
                     onChange={handleChange}
                     placeholder="Ej. Carlos Mendoza"
-                    className="w-full pl-11 pr-4 py-3 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/30 text-[14px] focus:border-white/30 focus:outline-none transition-colors"
+                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-white/30 text-[13px] sm:text-[14px] focus:border-simonGold focus:outline-none transition-colors"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* 3. Campo: Teléfono WhatsApp & Sede en 2 columnas */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
-                    Teléfono / WhatsApp *
+                  <label className="block text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1">
+                    WhatsApp *
                   </label>
                   <div className="relative">
-                    <Phone size={17} className="absolute left-4 top-3.5 text-white/40" />
+                    <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                     <input
                       type="tel"
                       name="telefono"
@@ -154,196 +207,121 @@ export default function ConvocatoriaModal({ isOpen, onClose }) {
                       value={formData.telefono}
                       onChange={handleChange}
                       placeholder="+591 7..."
-                      className="w-full pl-11 pr-4 py-3 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/30 text-[14px] focus:border-white/30 focus:outline-none transition-colors"
+                      className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-white/30 text-[13px] sm:text-[14px] focus:border-simonGold focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
-                    Ciudad de Residencia
+                  <label className="block text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1">
+                    Sede de Postulación
                   </label>
                   <div className="relative">
-                    <MapPin size={17} className="absolute left-4 top-3.5 text-white/40" />
+                    <MapPin size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                     <select
                       name="ciudad"
                       value={formData.ciudad}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 rounded-full bg-[#0D1527] border border-white/[0.08] text-white text-[14px] focus:border-white/30 focus:outline-none transition-colors appearance-none cursor-pointer"
+                      className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-[#0D1527] border border-white/10 text-white text-[13px] sm:text-[14px] focus:border-simonGold focus:outline-none transition-colors appearance-none cursor-pointer"
                     >
-                      <option value="Sucre">Sucre (Sede)</option>
-                      <option value="Oruro">Oruro</option>
-                      <option value="La Paz">La Paz</option>
-                      <option value="Cochabamba">Cochabamba</option>
-                      <option value="Santa Cruz">Santa Cruz</option>
-                      <option value="Potosi">Potosí</option>
-                      <option value="Exterior">Exterior (Internacional)</option>
+                      {SEDES.map(s => (
+                        <option key={s.id} value={s.id}>{s.label}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
-                  Correo Electrónico (Opcional)
-                </label>
-                <div className="relative">
-                  <Mail size={17} className="absolute left-4 top-3.5 text-white/40" />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="tucorreo@ejemplo.com"
-                    className="w-full pl-11 pr-4 py-3 rounded-full bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/30 text-[14px] focus:border-white/30 focus:outline-none transition-colors"
-                  />
-                </div>
+              {/* Aviso breve de fechas */}
+              <div className="px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between text-[11px] text-white/70">
+                <span className="text-simonGold font-semibold">Audiciones Oficiales:</span>
+                <span className="text-white/60 font-medium">12 y 13 de Noviembre</span>
               </div>
 
+              {/* Botón de Envío Principal */}
               <button
                 type="submit"
-                className="w-full mt-4 py-3.5 rounded-full bg-simonRed hover:bg-simonRedLight text-white font-sans text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(164,29,33,0.35)]"
+                className="w-full mt-2 py-3 rounded-full bg-simonRed hover:bg-simonRedLight text-white font-sans text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(229,71,55,0.4)]"
               >
-                <span>Continuar a Selección de Bloque</span>
-                <ArrowRight size={16} />
+                <span>Generar Pase de Admisión</span>
+                <ArrowRight size={15} />
               </button>
             </form>
           )}
 
-          {/* STEP 2: Tropa Selection */}
+          {/* ========================================================
+              PASO 2: PASE DIGITAL CONFIRMADO (Listo para WhatsApp)
+              ======================================================== */}
           {step === 2 && (
-            <div className="space-y-4">
-              <div className="text-[14px] text-white/70 leading-relaxed font-normal">
-                Selecciona la tropa o bloque al que aspiras ingresar:
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
-                {TROPAS.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, tropa: t.id })}
-                    className={`p-3.5 rounded-[18px] border text-left transition-all duration-150 cursor-pointer active:scale-95 ${
-                      formData.tropa === t.id
-                        ? 'bg-simonRed/20 border-simonGold shadow-md'
-                        : 'bg-white/[0.03] border-white/[0.08] hover:border-white/20'
-                    }`}
-                  >
-                    <div className="font-bebas text-lg text-white leading-tight">
-                      {t.name}
-                    </div>
-                    <div className="text-[11px] text-white/50 mt-0.5">
-                      {t.desc}
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="pt-2">
-                <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
-                  ¿Tienes experiencia bailando caporal?
-                </label>
-                <select
-                  name="experiencia"
-                  value={formData.experiencia}
-                  onChange={handleChange}
-                  className="w-full p-3 rounded-full bg-[#0D1527] border border-white/[0.08] text-white text-[14px] focus:border-white/30 focus:outline-none appearance-none cursor-pointer px-4"
-                >
-                  <option value="Principiante (Con muchas ganas de aprender)">Principiante (Desde cero, gran entusiasmo)</option>
-                  <option value="Intermedio (He bailado en fraternidades locales)">Intermedio (He bailado en otras agrupaciones)</option>
-                  <option value="Avanzado (He bailado en el Carnaval de Oruro)">Avanzado (He participado en Oruro)</option>
-                </select>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="w-1/3 py-3 rounded-full bg-white/[0.06] text-white/70 text-[12px] font-semibold uppercase tracking-wider hover:bg-white/[0.1] active:scale-95 transition-transform cursor-pointer border border-white/[0.08]"
-                >
-                  Atrás
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="w-2/3 py-3 rounded-full bg-simonRed hover:bg-simonRedLight text-white font-sans text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(229,71,55,0.4)]"
-                >
-                  <span>Generar Pase de Admisión</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Digital Pass & Confirmation */}
-          {step === 3 && (
-            <div className="space-y-6 text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 mx-auto">
-                <CheckCircle2 size={30} />
+            <div className="space-y-4 text-center">
+              
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 mx-auto">
+                <CheckCircle2 size={24} />
               </div>
 
               <div>
-                <h4 className="font-bebas text-3xl text-white tracking-wide">
-                  ¡POSTULACIÓN REGISTRADA CON ÉXITO!
+                <h4 className="font-bebas text-2xl sm:text-3xl text-white tracking-wide">
+                  ¡POSTULACIÓN REGISTRADA!
                 </h4>
-                <p className="text-[13px] text-white/70 mt-1 max-w-sm mx-auto leading-relaxed">
-                  Tu perfil para la Convocatoria Oruro 2027 ha sido pre-aprobado. Conserva este pase digital para tus entrevistas presenciales.
+                <p className="text-[12px] text-white/70 mt-0.5 leading-relaxed max-w-xs mx-auto">
+                  Tu pase digital está listo. Confírmalo ahora por WhatsApp con Secretaría para recibir tu rol de horarios.
                 </p>
               </div>
 
-              {/* Digital Admission Ticket - Apple Wallet Style */}
-              <div className="p-5 rounded-[22px] bg-[#0D1527]/90 border border-simonGold/40 text-left relative overflow-hidden shadow-2xl">
-                <div className="flex justify-between items-start border-b border-white/[0.08] pb-3 mb-3">
+              {/* Tarjeta Pase Digital Tipo Ticket */}
+              <div className="p-4 rounded-2xl bg-[#0D1527] border border-simonGold/40 text-left shadow-xl relative overflow-hidden">
+                <div className="flex justify-between items-start border-b border-white/[0.08] pb-2.5 mb-2.5">
                   <div>
-                    <span className="text-[10px] uppercase font-semibold tracking-widest text-simonGold">
+                    <span className="text-[9px] uppercase font-bold tracking-widest text-simonGold block">
                       PASE OFICIAL DE POSTULANTE
                     </span>
-                    <h5 className="font-bebas text-2xl text-white">
+                    <h5 className="font-bebas text-xl text-white leading-tight">
                       {formData.nombre.toUpperCase()}
                     </h5>
                   </div>
-                  <span className="text-[11px] font-mono font-semibold text-white/80 bg-white/[0.08] px-2.5 py-1 rounded-full border border-white/10">
+                  <span className="text-[11px] font-mono font-bold text-simonGold bg-white/[0.06] px-2 py-0.5 rounded-md border border-white/10">
                     {admissionCode}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[12px] text-white/70 mb-3">
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-white/70">
                   <div>
-                    <span className="text-white/40 block text-[10px] uppercase font-medium">Bloque Elegido</span>
+                    <span className="text-white/40 block text-[9px] uppercase font-semibold">Bloque</span>
                     <strong className="text-white">
                       {TROPAS.find(t => t.id === formData.tropa)?.name}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-white/40 block text-[10px] uppercase font-medium">Sede de Postulación</span>
+                    <span className="text-white/40 block text-[9px] uppercase font-semibold">Sede</span>
                     <strong className="text-white">{formData.ciudad}</strong>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-[14px] bg-simonRed/15 border border-simonRed/25 text-[11px] text-white/80">
-                  📅 <strong>Fecha de entrevistas:</strong> 12 y 13 de Noviembre de 2026.<br />
-                  📍 Lugar y horario asignado te serán confirmados por WhatsApp.
+                <div className="mt-2.5 p-2 rounded-xl bg-simonRed/15 border border-simonRed/25 text-[10px] text-white/80">
+                  📅 <strong>Entrevistas:</strong> 12 y 13 Noviembre · Indumentaria deportiva.
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2.5">
+              {/* Botón de Enlace WhatsApp */}
+              <div className="flex flex-col gap-2 pt-1">
                 <button
                   type="button"
                   onClick={handleWhatsApp}
-                  className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(16,185,129,0.35)]"
+                  className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(16,185,129,0.35)]"
                 >
-                  <Send size={16} />
-                  <span>Confirmar Registro por WhatsApp</span>
+                  <Send size={15} />
+                  <span>Confirmar por WhatsApp</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="w-full py-2.5 rounded-full bg-white/[0.06] text-white/60 text-[12px] font-semibold uppercase tracking-wider hover:bg-white/[0.1] hover:text-white active:scale-95 transition-all cursor-pointer border border-white/[0.08]"
+                  onClick={handleResetAndClose}
+                  className="w-full py-2 rounded-full bg-white/[0.04] text-white/50 text-[11px] font-semibold uppercase tracking-wider hover:text-white transition-all cursor-pointer"
                 >
-                  Cerrar y Volver al Sitio
+                  Cerrar
                 </button>
               </div>
+
             </div>
           )}
 

@@ -104,15 +104,15 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
           >
             {/* Header del Drawer */}
             <div>
-              <div className="p-6 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
-                <div className="flex items-center gap-3">
+              <div className="px-5 py-3.5 sm:px-6 sm:py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
+                <div className="flex items-center gap-2.5">
                   <img
                     src="/img/icono.png"
                     alt="San Simón Sucre"
-                    className="w-9 h-9 object-contain drop-shadow-[0_0_12px_rgba(229,71,55,0.6)]"
+                    className="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(229,71,55,0.6)]"
                   />
                   <div>
-                    <h3 className="font-varsity-override text-lg font-bold text-white tracking-wide leading-none uppercase">
+                    <h3 className="font-varsity-override text-base sm:text-lg font-bold text-white tracking-wide leading-none uppercase">
                       PORTAL <span className="text-simonRed">FRATERNO</span>
                     </h3>
                     <span className="text-[10px] uppercase tracking-wider text-white/50 font-medium">
@@ -124,42 +124,40 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
                 {/* Botón circular de cierre */}
                 <button
                   onClick={handleCloseDrawer}
-                  className="w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 text-white/70 hover:text-white border border-white/10 flex items-center justify-center transition-all cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:scale-95 text-white/70 hover:text-white border border-white/10 flex items-center justify-center transition-all cursor-pointer text-xs"
                   title="Cerrar panel (Esc)"
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               </div>
 
               {/* Contenido principal del formulario */}
-              <div className="p-6 space-y-6">
+              <div className="p-4 sm:p-6 space-y-4">
                 
-                {/* Banner de bienvenida institucional */}
-                <div className="p-4 rounded-[20px] bg-[#0D1527]/70 border border-white/[0.08] relative overflow-hidden">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-simonRed/15 border border-simonRed/30 flex items-center justify-center text-simonGold shrink-0 mt-0.5">
-                      <ShieldCheck size={18} />
-                    </div>
-                    <div>
-                      <h4 className="font-sans text-[13px] font-semibold text-white tracking-tight">
-                        Soy Simón de Corazón
-                      </h4>
-                      <p className="text-[12px] text-white/60 leading-relaxed mt-0.5 font-normal">
-                        Ingresa con tu código oficial o Cédula de Identidad para acceder a tu credencial digital y acreditación oficial para Oruro 2027.
-                      </p>
-                    </div>
+                {/* Banner de bienvenida institucional compacto */}
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-[#0D1527] border border-white/[0.08] flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-simonRed/15 border border-simonRed/30 flex items-center justify-center text-simonGold shrink-0">
+                    <ShieldCheck size={17} />
+                  </div>
+                  <div>
+                    <h4 className="font-sans text-[12px] font-semibold text-white tracking-tight">
+                      Acreditación Oficial Oruro 2027
+                    </h4>
+                    <p className="text-[11px] text-white/50 leading-tight mt-0.5">
+                      Ingresa tu C.I. o código oficial y tu PIN institucional.
+                    </p>
                   </div>
                 </div>
 
                 {/* Formulario de Login */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3.5">
                   {/* Campo 1: Código Fraterno o C.I. */}
                   <div>
-                    <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
+                    <label className="block text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1">
                       Código Fraterno o C.I. *
                     </label>
                     <div className="relative">
-                      <KeyRound size={17} className="absolute left-4 top-3.5 text-white/40" />
+                      <KeyRound size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                       <input
                         type="text"
                         value={codigo}
@@ -168,18 +166,18 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
                           if (error) setError('');
                         }}
                         placeholder="Ej. SS-SUC-0842 o Carnet"
-                        className="w-full pl-11 pr-4 py-3 rounded-full bg-[#0D1527]/50 border border-white/[0.08] text-white placeholder-white/30 text-[14px] focus:border-white/30 focus:outline-none transition-colors uppercase font-mono"
+                        className="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-white/30 text-[13px] sm:text-[14px] focus:border-simonGold focus:outline-none transition-colors uppercase font-mono"
                       />
                     </div>
                   </div>
 
                   {/* Campo 2: PIN o Contraseña */}
                   <div>
-                    <label className="block text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1.5">
-                      PIN o Contraseña Institucional *
+                    <label className="block text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-white/60 mb-1">
+                      PIN Institucional *
                     </label>
                     <div className="relative">
-                      <Lock size={17} className="absolute left-4 top-3.5 text-white/40" />
+                      <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                       <input
                         type={showPin ? 'text' : 'password'}
                         value={pin}
@@ -188,15 +186,15 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
                           if (error) setError('');
                         }}
                         placeholder="••••••"
-                        className="w-full pl-11 pr-11 py-3 rounded-full bg-[#0D1527]/50 border border-white/[0.08] text-white placeholder-white/30 text-[14px] focus:border-white/30 focus:outline-none transition-colors font-mono"
+                        className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-white/30 text-[13px] sm:text-[14px] focus:border-simonGold focus:outline-none transition-colors font-mono"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPin(!showPin)}
-                        className="absolute right-4 top-3.5 text-white/40 hover:text-white transition-colors cursor-pointer"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-pointer"
                         title={showPin ? "Ocultar PIN" : "Ver PIN"}
                       >
-                        {showPin ? <EyeOff size={17} /> : <Eye size={17} />}
+                        {showPin ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
                     </div>
                   </div>
@@ -204,23 +202,23 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
                   {/* Alerta de error si aplica */}
                   {error && (
                     <motion.div
-                      initial={{ opacity: 0, y: -6 }}
+                      initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="p-3 rounded-[16px] bg-red-500/10 border border-red-500/25 flex items-center gap-2.5 text-red-300 text-[12px]"
+                      className="p-2.5 rounded-xl bg-red-500/10 border border-red-500/25 flex items-center gap-2 text-red-300 text-[11px]"
                     >
-                      <AlertCircle size={15} className="shrink-0 text-red-400" />
+                      <AlertCircle size={14} className="shrink-0 text-red-400" />
                       <span>{error}</span>
                     </motion.div>
                   )}
 
-                  {/* Botón Principal de Acceso (Apple Signature Pill) */}
+                  {/* Botón Principal de Acceso */}
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full mt-2 py-3.5 rounded-full bg-simonRed hover:bg-simonRedLight text-white font-sans text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(229,71,55,0.4)] disabled:opacity-60"
+                    className="w-full mt-1 py-3 rounded-full bg-simonRed hover:bg-simonRedLight text-white font-sans text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider flex items-center justify-center gap-2 active:scale-[0.96] transition-transform cursor-pointer shadow-[0_4px_16px_rgba(229,71,55,0.4)] disabled:opacity-60"
                   >
                     <span>{isLoading ? 'Verificando...' : 'Ingresar al Portal Fraterno'}</span>
-                    <ArrowRight size={16} />
+                    <ArrowRight size={15} />
                   </button>
                 </form>
 
