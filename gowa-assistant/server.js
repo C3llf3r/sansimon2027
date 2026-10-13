@@ -104,22 +104,85 @@ function extractField(rawText, pattern) {
   return null;
 }
 
-// Cache en memoria para deduplicación de mensajes (evita reenvíos)
-const processedMessageIds = new Map();
+// ========================================================
+// SISTEMA DE SEGURIDAD MULTICAPA: ANTI-LOOP & ANTI-SPAM
+// ========================================================
 
-function isDuplicateMessage(messageId) {
-  if (!messageId) return false;
+// 1. Números del propio bot/servidor para prevenir auto-respuestas
+const BOT_NUMBERS = new Set(['59170322221']);
+
+// 2. Caché en memoria para deduplicación estricta y limitación de frecuencia
+const processedMessageIds = new Map(); // id -> timestamp
+const recentUserActivity = new Map(); // phone -> { lastText, lastResponseTime, windowStart, countInWindow, circuitBreakerUntil }
+
+function isDuplicateOrSpam(sender, messageId, text) {
   const now = Date.now();
-  // Limpiar mensajes con más de 10 minutos
+
+  // Limpieza periódica de memoria (entradas > 15 minutos)
   for (const [id, time] of processedMessageIds.entries()) {
-    if (now - time > 10 * 60 * 1000) {
-      processedMessageIds.delete(id);
+    if (now - time > 15 * 60 * 1000) processedMessageIds.delete(id);
+  }
+  for (const [phone, data] of recentUserActivity.entries()) {
+    if (now - data.windowStart > 60 * 1000 && data.circuitBreakerUntil < now) {
+      recentUserActivity.delete(phone);
     }
   }
-  if (processedMessageIds.has(messageId)) {
+
+  // Capa A: Deduplicación exacta por ID de Mensaje de WhatsApp
+  if (messageId) {
+    if (processedMessageIds.has(messageId)) {
+      console.log(`[Anti-Loop Bloqueado] MessageID ya procesado anteriormente: ${messageId}`);
+      return true;
+    }
+    processedMessageIds.set(messageId, now);
+  }
+
+  // Capa B: Control de actividad y Rate Limiting por Remitente
+  const user = recentUserActivity.get(sender) || {
+    lastText: '',
+    lastResponseTime: 0,
+    windowStart: now,
+    countInWindow: 0,
+    circuitBreakerUntil: 0,
+  };
+
+  // Disyuntor activo (Circuit Breaker activado por ráfagas excesivas)
+  if (user.circuitBreakerUntil > now) {
+    const remainingSec = Math.ceil((user.circuitBreakerUntil - now) / 1000);
+    console.warn(`[Anti-Spam Circuit Breaker] Usuario ${sender} silenciado temporalmente (${remainingSec}s restantes).`);
     return true;
   }
-  processedMessageIds.set(messageId, now);
+
+  // Capa C: Prevención de repetición inmediata del mismo texto exacto (< 10 segundos)
+  if (user.lastText === text && now - user.lastResponseTime < 10000) {
+    console.warn(`[Anti-Loop Bloqueado] Mismo texto repetido en menos de 10s de ${sender}`);
+    return true;
+  }
+
+  // Capa D: Debounce de seguridad (Mínimo 3.5 segundos entre respuestas al mismo usuario)
+  if (now - user.lastResponseTime < 3500) {
+    console.warn(`[Anti-Spam Debounce] Mensaje recibido demasiado rápido de ${sender} (< 3.5s). Ignorado.`);
+    return true;
+  }
+
+  // Capa E: Umbral de ráfaga (Máximo 5 respuestas en una ventana móvil de 1 minuto)
+  if (now - user.windowStart < 60000) {
+    user.countInWindow += 1;
+    if (user.countInWindow > 5) {
+      user.circuitBreakerUntil = now + 5 * 60 * 1000; // Bloqueo de seguridad de 5 minutos
+      console.error(`🚨 [CIRCUIT BREAKER ACTIVADO] ${sender} superó 5 mensajes en 1 min. Silenciado por 5 minutos.`);
+      recentUserActivity.set(sender, user);
+      return true;
+    }
+  } else {
+    user.windowStart = now;
+    user.countInWindow = 1;
+  }
+
+  user.lastText = text;
+  user.lastResponseTime = now;
+  recentUserActivity.set(sender, user);
+
   return false;
 }
 
@@ -129,42 +192,59 @@ app.post('/webhook', async (req, res) => {
     const body = req.body || {};
     const event = body.event || '';
 
-    // 1. Filtrar únicamente eventos de mensajes nuevos entrantes
-    if (event && event !== 'message') {
-      return res.status(200).json({ status: `Ignored event: ${event}` });
+    // 1. Filtrar estrictamente: SOLO procesar eventos 'message'
+    if (event !== 'message') {
+      return res.status(200).json({ status: `Ignored non-message event: ${event}` });
     }
 
     // Desempaquetar payload según formato GoWA MultiDevice
     const payload = body.payload || body;
 
     // 2. Ignorar eventos de confirmación de entrega o lectura (ack, receipt, delivered)
-    if (payload.receipt_type || payload.ids || body.event === 'message.ack') {
+    if (payload.receipt_type || payload.ids || body.event === 'message.ack' || payload.broadcast) {
       return res.status(200).json({ status: 'Ignored delivery receipt/ack' });
     }
 
-    // 3. Ignorar mensajes enviados por el propio bot para no crear bucle
-    const isFromMe = payload.is_from_me || body.is_from_me || false;
+    // 3. Ignorar mensajes enviados por el propio bot (chequeo multinivel exhaustivo)
+    const isFromMe = 
+      payload.is_from_me === true || 
+      body.is_from_me === true || 
+      payload.fromMe === true || 
+      payload.key?.fromMe === true;
+
     if (isFromMe) {
-      return res.status(200).json({ status: 'Ignored own message' });
+      return res.status(200).json({ status: 'Ignored own message (isFromMe)' });
     }
 
-    // 4. Ignorar si el texto está vacío
+    // 4. Ignorar mensajes grupales para no responder en grupos comunitarios
+    const chatId = payload.chat_id || body.chat_id || '';
+    if (chatId.endsWith('@g.us')) {
+      return res.status(200).json({ status: 'Ignored group message' });
+    }
+
+    // 5. Validar remitente y asegurar que no sea el propio número del bot
+    const senderRaw = payload.from || payload.sender || payload.phone || body.from || '';
+    const sender = senderRaw.replace(/@.*$/, '').replace(/[^0-9]/g, '');
+    const deviceNumber = (body.device_id || '').replace(/@.*$/, '').replace(/[^0-9]/g, '');
+
+    if (!sender) {
+      return res.status(200).json({ status: 'Ignored missing sender' });
+    }
+
+    if (BOT_NUMBERS.has(sender) || (deviceNumber && sender === deviceNumber)) {
+      return res.status(200).json({ status: 'Ignored bot own phone number' });
+    }
+
+    // 6. Validar que contenga texto real
     const text = (payload.body || payload.message || payload.text || body.message || body.body || '').trim();
     if (!text || text.length === 0) {
       return res.status(200).json({ status: 'Ignored empty message' });
     }
 
-    // 5. Deduplicación por ID de mensaje de WhatsApp
+    // 7. Deduplicación por ID de mensaje y Circuit Breaker
     const messageId = payload.id || body.id || null;
-    if (messageId && isDuplicateMessage(messageId)) {
-      console.log(`[GoWA Webhook] Mensaje duplicado ignorado: ${messageId}`);
-      return res.status(200).json({ status: 'Ignored duplicate message' });
-    }
-
-    const senderRaw = payload.from || payload.sender || payload.phone || body.from || '';
-    const sender = senderRaw.replace(/@.*$/, '').replace(/[^0-9]/g, '');
-    if (!sender) {
-      return res.status(200).json({ status: 'Ignored missing sender' });
+    if (isDuplicateOrSpam(sender, messageId, text)) {
+      return res.status(200).json({ status: 'Ignored duplicate or rate-limited message' });
     }
 
     console.log(`[GoWA Webhook Procesando]: De ${sender} | MsgID: ${messageId || 'N/A'} | Texto: "${text}"`);
