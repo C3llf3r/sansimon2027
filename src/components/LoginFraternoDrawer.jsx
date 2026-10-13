@@ -107,9 +107,10 @@ export default function LoginFraternoDrawer({ isOpen, onClose, onLoginSuccess, o
               <div className="px-5 py-3.5 sm:px-6 sm:py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
                 <div className="flex items-center gap-2.5">
                   <img
-                    src="/img/icono.svg"
+                    src="/img/icono.webp"
                     alt="San Simón Sucre"
                     className="w-8 h-8 object-contain drop-shadow-[0_0_10px_rgba(229,71,55,0.6)]"
+                    onError={(e) => { e.currentTarget.src = '/img/icono.png'; }}
                   />
                   <div>
                     <h3 className="font-varsity-override text-base sm:text-lg font-bold text-white tracking-wide leading-none uppercase">

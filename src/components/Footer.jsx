@@ -14,9 +14,11 @@ export default function Footer({ onOpenForm, onOpenMemberPortal, onOpenAdmin }) 
         <div className="md:col-span-5 flex flex-col items-start">
           <div className="flex items-center gap-3 mb-4">
             <img 
-              src="/img/icono.svg" 
+              src="/img/icono.webp" 
               alt="San Simón Sucre" 
               className="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(229,71,55,0.6)]" 
+              loading="lazy"
+              onError={(e) => { e.currentTarget.src = '/img/icono.png'; }}
             />
             <span className="font-varsity-override text-2xl font-bold text-white tracking-wider">
               SAN SIMÓN <span className="text-simonRed">SUCRE</span>
