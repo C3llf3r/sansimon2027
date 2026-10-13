@@ -17,9 +17,12 @@ export default function Navbar({ onOpenForm, onOpenMemberPortal }) {
         {/* Brand */}
         <a href="#" className="flex items-center gap-3 group">
           <img 
-            src="/img/icono.svg" 
+            src="/img/icono.webp" 
             alt="Caporales San Simón Sucre" 
             className="w-9 h-9 md:w-10 md:h-10 object-contain drop-shadow-[0_0_12px_rgba(229,71,55,0.6)] group-hover:scale-105 transition-transform" 
+            loading="eager"
+            fetchPriority="high"
+            onError={(e) => { e.currentTarget.src = '/img/icono.png'; }}
           />
           <div className="flex flex-col">
             <span className="font-varsity-override text-xl md:text-2xl tracking-wide uppercase font-bold text-white leading-none">
