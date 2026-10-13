@@ -84,9 +84,9 @@ export default function Hero({ onOpenForm, onOpenMemberPortal }) {
             transition={{ duration: 0.8 }}
             className="font-superstar text-5xl sm:text-7xl lg:text-8xl tracking-tight leading-[0.98] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)]"
           >
-            ¡NO ES MAGIA, <br />
+            <span className="font-exclamation">¡</span>NO ES MAGIA, <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-simonRed to-red-400">
-              ES SUCRE!
+              ES SUCRE<span className="font-exclamation">!</span>
             </span>
           </motion.h1>
 

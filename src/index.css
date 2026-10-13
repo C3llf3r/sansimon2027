@@ -13,10 +13,15 @@
   src: url('/fonts/Superstar-M54.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  unicode-range: U+0020, U+0024, U+002E, U+0030-0039, U+0041-005A, U+0061-007A, U+007B, U+007D;
 }
 
 .font-superstar {
-  font-family: 'SuperstarM54', 'VarsityTeam', sans-serif !important;
+  font-family: 'SuperstarM54', 'VarsityTeam', 'Impact', 'Arial Black', sans-serif !important;
+}
+
+.font-exclamation {
+  font-family: 'VarsityTeam', 'Impact', 'Arial Black', sans-serif !important;
 }
 
 .font-varsity-override {
